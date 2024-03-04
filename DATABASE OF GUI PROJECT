@@ -1,0 +1,124 @@
+
+import sqlite3
+
+# Connect to SQLite database
+conn = sqlite3.connect(':memory:')  # Using in-memory database for simplicity
+
+# Create a cursor object to interact with the database
+cursor = conn.cursor()
+
+# Create tables if they don't exist
+cursor.execute('''CREATE TABLE IF NOT EXISTS Men_ring
+                 (srno INTEGER PRIMARY KEY,
+                  name TEXT,
+                  carat TEXT,
+                  price INTEGER)''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS Men_bracelet
+                 (srno INTEGER PRIMARY KEY,
+                  name TEXT,
+                  carat TEXT,
+                  price INTEGER)''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS Men_chain
+                 (srno INTEGER PRIMARY KEY,
+                  name TEXT,
+                  carat TEXT,
+                  price INTEGER)''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS Women_ring
+                 (srno INTEGER PRIMARY KEY,
+                  name TEXT,
+                  carat TEXT,
+                  price INTEGER)''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS Women_bracelet
+                 (srno INTEGER PRIMARY KEY,
+                  name TEXT,
+                  carat TEXT,
+                  price INTEGER)''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS Women_chain
+                 (srno INTEGER PRIMARY KEY,
+                  name TEXT,
+                  carat TEXT,
+                  price INTEGER)''')
+
+# Insert sample data into Men_ring table
+men_ring_data = [
+    (1, 'Engagement Ring ', '22k', 50000),
+    (2, 'Rajkot Ring ', '18k', 70000),
+]
+cursor.executemany("INSERT INTO Men_ring (srno, name, carat, price) VALUES (?, ?, ?, ?)", men_ring_data)
+
+# Insert sample data into Men_bracelet table
+men_bracelet_data = [
+    (1, 'Shikar Bracelet ', '22k', 80000),
+    (2, 'Bandel Bracelet ', '18k', 60000),
+]
+cursor.executemany("INSERT INTO Men_bracelet (srno, name, carat, price) VALUES (?, ?, ?, ?)", men_bracelet_data)
+
+# Insert sample data into Men_chain table
+men_chain_data = [
+    (1, 'Slim Thick Chain ', '22k', 100000),
+    (2, 'Mens Casual Chain ', '18k', 90000),
+]
+cursor.executemany("INSERT INTO Men_chain (srno, name, carat, price) VALUES (?, ?, ?, ?)", men_chain_data)
+
+# Insert sample data into Women_ring table
+women_ring_data = [
+    (1, 'Women Elite Ring', '22k', 45000),
+    (2, 'Women  Padma Ring ', '18k', 65000),
+]
+cursor.executemany("INSERT INTO Women_ring (srno, name, carat, price) VALUES (?, ?, ?, ?)", women_ring_data)
+
+# Insert sample data into Women_bracelet table
+women_bracelet_data = [
+    (1, 'Penta Stone Bracelet ', '22k', 75000),
+    (2, ' Caged Design Bracelet', '18k', 55000),
+]
+cursor.executemany("INSERT INTO Women_bracelet (srno, name, carat, price) VALUES (?, ?, ?, ?)", women_bracelet_data)
+
+# Insert sample data into Women_chain table
+women_chain_data = [
+    (1, 'Women Kamal Chain ', '22k', 95000),
+    (2, 'Women Bandhan Chain ', '18k', 185000),
+]
+cursor.executemany("INSERT INTO Women_chain (srno, name, carat, price) VALUES (?, ?, ?, ?)", women_chain_data)
+
+# Commit changes to the database
+conn.commit()
+
+# Fetch and print data from Men_ring table
+cursor.execute("SELECT * FROM Men_ring")
+print("Men's Rings:")
+print(cursor.fetchall())
+
+# Fetch and print data from Men_bracelet table
+cursor.execute("SELECT * FROM Men_bracelet")
+print("\nMen's Bracelets:")
+print(cursor.fetchall())
+
+# Fetch and print data from Men_chain table
+cursor.execute("SELECT * FROM Men_chain")
+print("\nMen's Chains:")
+print(cursor.fetchall())
+
+# Fetch and print data from Women_ring table
+cursor.execute("SELECT * FROM Women_ring")
+print("\nWomen's Rings:")
+print(cursor.fetchall())
+
+# Fetch and print data from Women_bracelet table
+cursor.execute("SELECT * FROM Women_bracelet")
+print("\nWomen's Bracelets:")
+print(cursor.fetchall())
+
+# Fetch and print data from Women_chain table
+cursor.execute("SELECT * FROM Women_chain")
+print("\nWomen's Chains:")
+print(cursor.fetchall())
+
+# Close the cursor and the connection
+cursor.close()
+conn.close()
