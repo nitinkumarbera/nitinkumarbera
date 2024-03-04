@@ -1,0 +1,209 @@
+import tkinter as tk
+from tkinter import messagebox
+import sqlite3
+
+class JewelryShopApp:
+    def __init__(self, master):
+        try:
+            self.master = master
+            master.title("Jewellery Shopping App")
+
+            self.label1 = tk.Label(master, text="******Welcome to Devki Jewellers******")
+            self.label1.pack()
+
+            self.label2 = tk.Label(master, text="Creating and Caring Smiles and Happiness....... Since 2000.")
+            self.label2.pack()
+
+            self.buy_button = tk.Button(master, text="Buy Jewellery", command=self.buy_jewelry)
+            self.buy_button.pack()
+
+            self.close_button_main = tk.Button(master, text="Close", command=master.quit)
+            self.close_button_main.pack()
+
+            # Connect to SQLite database
+            self.conn = sqlite3.connect(':memory:')  # Using in-memory database for simplicity
+            self.create_tables()
+            self.insert_sample_data()
+        except Exception as e:
+            print(f"An error occurred in initialization: {e}")
+
+    def create_tables(self):
+        try:
+            # Create tables if not exists
+            self.conn.execute('''CREATE TABLE IF NOT EXISTS Men_ring
+                                 (srno INTEGER PRIMARY KEY,
+                                  name TEXT,
+                                  carat TEXT,
+                                  price INTEGER)''')
+
+            self.conn.execute('''CREATE TABLE IF NOT EXISTS Men_bracelet
+                                 (srno INTEGER PRIMARY KEY,
+                                  name TEXT,
+                                  carat TEXT,
+                                  price INTEGER)''')
+
+            self.conn.execute('''CREATE TABLE IF NOT EXISTS Men_chain
+                                 (srno INTEGER PRIMARY KEY,
+                                  name TEXT,
+                                  carat TEXT,
+                                  price INTEGER)''')
+
+            self.conn.execute('''CREATE TABLE IF NOT EXISTS Women_ring
+                                 (srno INTEGER PRIMARY KEY,
+                                  name TEXT,
+                                  carat TEXT,
+                                  price INTEGER)''')
+
+            self.conn.execute('''CREATE TABLE IF NOT EXISTS Women_bracelet
+                                 (srno INTEGER PRIMARY KEY,
+                                  name TEXT,
+                                  carat TEXT,
+                                  price INTEGER)''')
+
+            self.conn.execute('''CREATE TABLE IF NOT EXISTS Women_chain
+                                 (srno INTEGER PRIMARY KEY,
+                                  name TEXT,
+                                  carat TEXT,
+                                  price INTEGER)''')
+            self.conn.commit()
+        except Exception as e:
+            print(f"An error occurred in creating tables: {e}")
+
+    def insert_sample_data(self):
+        try:
+            # Insert sample data into tables
+            men_ring_data = [
+                (1, 'Engagement Ring ', '22k', 50000),
+                (2, 'Rajkot Ring ', '18k', 70000),
+            ]
+            self.insert_data('Men_ring', men_ring_data)
+
+            men_bracelet_data = [
+                (1, 'Shikar Bracelet ', '22k', 80000),
+                (2, 'Bandel Bracelet ', '18k', 60000),
+            ]
+            self.insert_data('Men_bracelet', men_bracelet_data)
+
+            men_chain_data = [
+                (1, 'Slim Thick Chain ', '22k', 100000),
+                (2, 'Mens Casual Chain ', '18k', 90000),
+            ]
+            self.insert_data('Men_chain', men_chain_data)
+
+            women_ring_data = [
+                (1, 'Women Elite Ring', '22k', 45000),
+                (2, 'Women  Padma Ring ', '18k', 65000),
+            ]
+            self.insert_data('Women_ring', women_ring_data)
+
+            women_bracelet_data = [
+                (1, 'Penta Stone Bracelet ', '22k', 75000),
+                (2, ' Caged Design Bracelet', '18k', 55000),
+            ]
+            self.insert_data('Women_bracelet', women_bracelet_data)
+
+            women_chain_data = [
+                (1, 'Women Kamal Chain ', '22k', 95000),
+                (2, 'Women Bandhan Chain ', '18k', 185000),
+            ]
+            self.insert_data('Women_chain', women_chain_data)
+        except Exception as e:
+            print(f"An error occurred in inserting sample data: {e}")
+
+    def insert_data(self, table_name, data):
+        try:
+            # Insert data into the specified table
+            self.conn.executemany(f"INSERT INTO {table_name} (srno, name, carat, price) VALUES (?, ?, ?, ?)", data)
+            self.conn.commit()
+        except Exception as e:
+            print(f"An error occurred in inserting data into {table_name}: {e}")
+
+    def buy_jewelry(self):
+        try:
+            buy_window = tk.Toplevel(self.master)
+            buy_window.title("Buy Jewellery")
+
+            men_label = tk.Label(buy_window, text="Men's Jewellery")
+            men_label.pack()
+
+            men_ring_button = tk.Button(buy_window, text="Men's Rings", command=lambda: self.display_items('Men', 'Ring'))
+            men_ring_button.pack()
+
+            men_bracelet_button = tk.Button(buy_window, text="Men's Bracelets", command=lambda: self.display_items('Men', 'Bracelet'))
+            men_bracelet_button.pack()
+
+            men_chain_button = tk.Button(buy_window, text="Men's Chains", command=lambda: self.display_items('Men', 'Chain'))
+            men_chain_button.pack()
+
+            women_label = tk.Label(buy_window, text="Women's Jewelry")
+            women_label.pack()
+
+            women_ring_button = tk.Button(buy_window, text="Women's Rings", command=lambda: self.display_items('Women', 'Ring'))
+            women_ring_button.pack()
+
+            women_bracelet_button = tk.Button(buy_window, text="Women's Bracelets", command=lambda: self.display_items('Women', 'Bracelet'))
+            women_bracelet_button.pack()
+
+            women_chain_button = tk.Button(buy_window, text="Women's Chains", command=lambda: self.display_items('Women', 'Chain'))
+            women_chain_button.pack()
+
+            self.close_button_buy = tk.Button(buy_window, text="Close", command=buy_window.destroy)
+            self.close_button_buy.pack()
+        except Exception as e:
+            print(f"An error occurred in buying jewellery: {e}")
+
+    def display_items(self, gender, item):
+        try:
+            # Fetch and display items based on gender and item type
+            table_name = f"{gender.lower()}_{item.lower()}"
+            items = self.conn.execute(f"SELECT name, carat, price FROM {table_name}").fetchall()
+
+            # Open a new window to display the items
+            display_window = tk.Toplevel(self.master)
+            display_window.title(f"{gender}'s {item}s")
+
+            for idx, item in enumerate(items):
+                item_frame = tk.Frame(display_window)
+                item_frame.pack()
+
+                tk.Label(item_frame, text=f"{idx+1}. {item[0]} - {item[1]} - ₹{item[2]}").pack(side=tk.LEFT)
+
+                # Add a SpinBox for quantity
+                spinbox = tk.Spinbox(item_frame, from_=1, to=20)
+                spinbox.pack(side=tk.LEFT)
+
+                # Add a buying button for each item
+                buy_button = tk.Button(item_frame, text=f"Buy", command=lambda item=item: self.buy_item(gender, item, spinbox))
+                buy_button.pack(side=tk.LEFT)
+
+            # Add a button to close the window
+            close_button = tk.Button(display_window, text="Close", command=display_window.destroy)
+            close_button.pack()
+        except Exception as e:
+            print(f"An error occurred in displaying items: {e}")
+
+    def buy_item(self, gender, item, spinbox):
+        try:
+            # Perform action when a specific item is clicked
+            table_name = f"{gender.lower()}_{item[0].split()[1].lower()}s"
+            quantity = int(spinbox.get())
+            item_name, item_carat, item_price = item
+            total_price = item_price * quantity
+            messagebox.showinfo("Purchase Confirmation", f"You have bought {quantity} {item_name}(s) for a total of ₹{total_price}")
+            
+            # Create a new window for Thank you message and Visit again label
+            thank_window = tk.Toplevel(self.master)
+            thank_window.title("Thank You!")
+
+            thank_label = tk.Label(thank_window, text="Thank you for shopping with us! Yours Pleasure is ours pleasure...")
+            thank_label.pack()
+
+            visit_label = tk.Label(thank_window, text="Please visit again!")
+            visit_label.pack()
+        except Exception as e:
+            print(f"An error occurred in buying item: {e}")
+
+# Initialize the application
+root = tk.Tk()
+app = JewelryShopApp(root)
+root.mainloop()
