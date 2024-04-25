@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @nitinkumarbera
-- 👀 I’m interested in History,Philoshophy
+- 👀 I’m interested in AI, App Development,Philoshophy
 - 🌱 I’m currently learning Github
 - 💞️ I’m looking to collaborate on FAANG Companies
 - 📫 How to reach me Email ID: beranitincs232446@gmail.com
